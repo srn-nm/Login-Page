@@ -4,15 +4,17 @@ function clickLoginButton() {
 }
 
 async function Challenge() {
+
+
     const resultDiv = document.getElementById("result");
     if (resultDiv){
         resultDiv.innerHTML = "...درحال بررسی"
     }
     
-    const currentUsername = document.getElementById("username").value;
-    const currentPassword = document.getElementById("password").value;
-    const currentAuthType = document.getElementById("authTypeDropDown").value;
-    const currentType = document.getElementById("typeDropDown").value;
+    currentUsername = document.getElementById("username").value;
+    currentPassword = document.getElementById("password").value;
+    currentAuthType = document.getElementById("authTypeDropDown").value;
+    currentType = document.getElementById("typeDropDown").value;
 
     const requestData = {
         authType: currentAuthType,  //"MOBILE",
@@ -20,7 +22,14 @@ async function Challenge() {
         type: currentType,  //"USERPASS",
         username: currentUsername
     };
-    
+
+    const dataSending = {
+        "authType": "MOBILE",
+        "password": "$aMneQ34Gh",
+        "type": "USERPASS",
+        "username": "s.nasermoghadasi"
+    }
+
     try {
         const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
         
@@ -30,57 +39,144 @@ async function Challenge() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(requestData)
-        })
-
-        const data = await response.json();
-
+        });
+    
+        const text = await response.text(); // get raw response (can be JSON or plain text)
+    
+        let data;
+        try {
+            data = JSON.parse(text); // try parsing it as JSON
+        } catch (e) {
+            data = text; // fallback to plain text if parsing fails
+        }
+    
         if (!response.ok) {
             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">Response is not ok. ${response}</p>`;
-        } else if (response.errors) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response}</p>`;
+        } else if (response.error) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response.error}</p>`;
         }
 
         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
         //show_verification_page();
     }
     
-    catch(error) {
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Unsuccessful. (${(error)})</p>`;
-        //show_verification_page(); // for testing
-    }    
-}
-
-
-function show_verification_page() {
-
-    const resultDiv = document.getElementById("result");
-    if (resultDiv){
-        resultDiv.innerHTML = "درحال بررسی"
+    } catch (error) {
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
     }
-
-    //send_sms_to_mobile();
-
-    window.location.href = "index2.html";
-
-
-    // const getCookie = (name: string): string | undefined => {
-    //     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    //     return match ? match[2] : undefined;
-    // };
-    // // yek rah baraye gereftane cookie va hefzesh bayad peyda konam
-
-    // if (resultDiv){
-    //     const resultDiv2 = document.getElementById("result2");
-    //     resultDiv2.innerHTML = getCookie("mobile"); //namayeshe mobile un zir
-    // }
-
-    // const verifyButton = target.querySelector("#verifyButton");
-    // verifyButton.addEventListener("click", () => {
-
-    //     handle_SMS_verification();
-    //     // currentVerificationCode = (document.getElementById("password") as HTMLInputElement).value;
-    // }); 
+    
 }
+
+
+// function show_verification_page() {
+
+//     const resultDiv = document.getElementById("result");
+//     if (resultDiv){
+//         resultDiv.innerHTML = "...درحال بررسی"
+//     }
+
+//     this.send_sms_to_mobile();
+
+//     this.target.innerHTML = `
+//         <style>
+//             body {
+//                 font-family: "Arial", sans-serif;
+//                 background-color: #f4f4f4;
+//                 display: flex;
+//                 justify-content: center;
+//                 align-items: center;
+//                 height: 500px;
+//                 width: 400px;
+//                 margin: 0;
+//                 flex-shrink: 0;
+//             }
+
+//             .verification-form {
+//                 background-color: white;
+//                 padding: 40px;
+//                 border-radius: 8px;
+//                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+//                 width: 400px;
+//                 text-align: center;
+//                 flex-shrink: 0;
+//             }
+
+//             .verification-form h2 {
+//                 font-size: 24px;
+//                 margin-bottom: 20px;
+//                 color: #333;
+//             }
+
+//             .verification-form button,
+//             .verification-form input {
+//                 width: 100%;
+//                 padding: 12px;
+//                 margin: 10px 0;
+//                 font-size: 16px;
+//                 border: 1px solid #ccc;
+//                 border-radius: 6px;
+//                 display: block;
+//                 text-align: center;
+
+//             }
+
+//             .verification-form button {
+//                 background-color: #007bff;
+//                 color: white;
+//                 font-size: 18px;
+//                 cursor: pointer;
+//                 border: none;
+//                 transition: 0.3s ease;
+//             }
+
+//             .verification-form button:hover {
+//                 background-color: #0056b3;
+//             }
+
+//             #result {
+//                 font-size: 18px;
+//                 color:  #0056b3;
+//                 margin-top: 20px;
+//             }
+
+//             #result2 {
+//                 font-size: 18px;
+//                 color:  #0056b3;
+//                 margin-top: 20px;
+//             }
+//         </style>
+
+//         <div class="verification-form">
+//             <h2>کد ارسال شده به تلفن همراه را وارد کنید</h2>
+
+//             <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;" >
+//                 <input type="text" id="verificationCode" maxlength="4" placeholder="_ _ _ _‍" />
+//                 <button id="verifyButton">بررسی</button>
+//             </div>
+            
+//             <div id="result"></div>
+//             <div id="result2"></div>
+            
+//         </div>
+//     `;
+
+//     const getCookie = (name: string): string | undefined => {
+//         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+//         return match ? match[2] : undefined;
+//     };
+//     // yek rah baraye gereftane cookie va hefzesh bayad peyda konam
+
+//     if (resultDiv){
+//         const resultDiv2 = document.getElementById("result2");\z
+//         resultDiv2.innerHTML = getCookie("mobile"); //namayeshe mobile un zir
+//     }
+
+//     const verifyButton = this.target.querySelector("#verifyButton") as HTMLButtonElement;
+//     verifyButton.addEventListener("click", () => {
+
+//         this.handle_SMS_verification();
+//         // this.currentVerificationCode = (document.getElementById("password") as HTMLInputElement).value;
+//     }); 
+// }
 
 // function send_sms_to_mobile() {
 //     const getCookie = (name: string): string | undefined => {
@@ -295,4 +391,4 @@ function show_verification_page() {
 //         const resultDiv = document.getElementById("result");
 //         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Error storing token.</p>`
 //     }
-// }
+// 
