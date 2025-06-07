@@ -36,8 +36,8 @@ async function Challenge() {
 
         if (!response.ok) {
             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">Response is not ok. ${response}</p>`;
-        } else if (response.errors) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response}</p>`;
+        } else if (response.error) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response.error}</p>`;
         }
 
         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
