@@ -42,10 +42,14 @@ async function Challenge() {
         }
     
         if (!response.ok) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error ${response.status} ${response.statusText}<br>Details: ${JSON.stringify(data)}</p>`;
-        } else {
-            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}</p>`;
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">Response is not ok. ${response}</p>`;
+        } else if (response.errors) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response}</p>`;
         }
+
+        resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
+        //show_verification_page();
+    }
     
     } catch (error) {
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
