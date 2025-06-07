@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <style>
+        body {
+            font-family: "Arial", sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .verification-form {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .verification-form h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .verification-form button,
+        .verification-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            display: block;
+            text-align: center;
+        }
+
+        .verification-form button {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s ease;
+        }
+
+        .verification-form button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            font-size: 18px;
+            color:  #0056b3;
+            margin-top: 20px;
+        }
+
+        #result2 {
+            font-size: 18px;
+            color:  #0056b3;
+            margin-top: 20px;
+        }
+    </style>
+
+    <div class="verification-form">
+        <h2>کد ارسال شده به تلفن همراه را وارد کنید</h2>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;" >
+            <input type="text" id="verificationCode" maxlength="4" placeholder="_ _ _ _‍" />
+            <button id="verifyButton">بررسی</button>
+        </div>
+        
+        <div id="result"></div>
+        <div id="result2"></div>
+        
+    </div>
+
+        <script src="main.js"></script>
+
+</body>
+</html>
