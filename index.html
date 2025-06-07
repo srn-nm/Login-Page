@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <style>
+        @font-face {
+            font-family: "Vazir";
+            src: url('../fonts/Vazir.woff2') format('woff2'),
+            url('../fonts/Vazir.woff') format('woff');
+        }
+
+        body {
+            font-family: "Vazir", sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+            width: 400px;
+            margin: 0;
+            flex-shrink: 0
+        }
+
+        .login-form {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            text-align: center;
+            flex-shrink: 0
+        }
+
+        .login-form h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .login-form select,
+        .login-form button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            display: block;
+        }
+
+        .login-form label {
+            font-size: 18px;
+            display: block;
+            margin-top: 15px;
+            text-align: left;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .login-form button {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            font-size: 16px;
+            color: #007bff;
+            margin-top: 15px;
+        
+        }
+
+    </style>
+
+        <div class="login-form">
+            <h2>ورود کاربری</h2>
+
+            <input type="text" id="username" placeholder="نام کاربری" />
+            <input type="password" id="password" placeholder="گذرواژه" />
+
+            <label for="authTypeDropDown">Choose an option:</label>
+                <select id="authTypeDropDown" name="choice1">
+                    <option value="Option1">Option 1</option>
+                    <option value="Option2">Option 2</option>
+                </select>
+
+            <label for="typeDropDown">Choose an option:</label>
+            <select id="typeDropDown" name="choice2">
+                <option value="Option1">Option 1</option>
+                <option value="Option2">Option 2</option>
+            </select>
+
+            <button id="loginButton" onclick="clickLoginButton()">ورود</button>
+            <div id="result"></div>
+        </div>
+
+        <script src="main.js"></script>
+
+</body>
+</html>
