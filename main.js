@@ -1,6 +1,6 @@
 function clickLoginButton() {
     document.getElementById("result").innerHTML = "...درحال تست"
-    this.Challenge();
+    Challenge();
 }
 
 async function Challenge() {
@@ -8,45 +8,45 @@ async function Challenge() {
     if (resultDiv){
         resultDiv.innerHTML = "...درحال بررسی"
     }
-
-    this.currentUsername = document.getElementById("username").value;
-    this.currentPassword = document.getElementById("password").value;
-    this.currentAuthType = document.getElementById("authTypeDropDown").value;
-    this.currentType = document.getElementById("typeDropDown").value;
+    
+    currentUsername = document.getElementById("username").value;
+    currentPassword = document.getElementById("password").value;
+    currentAuthType = document.getElementById("authTypeDropDown").value;
+    currentType = document.getElementById("typeDropDown").value;
 
     const requestData = {
-        authType: this.currentAuthType,  //"MOBILE",
-        password: this.currentPassword,
-        type: this.currentType,  //"USERPASS",
-        username: this.currentUsername
+        authType: currentAuthType,  //"MOBILE",
+        password: currentPassword,
+        type: currentType,  //"USERPASS",
+        username: currentUsername
     };
     
     try {
         const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
         
         const response = await fetch(apiURL, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({requestData})
+            body: JSON.stringify(requestData)
         })
 
         const data = await response.json();
 
         if (!response.ok) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;"> response is not ok. ${response}</p>`;
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">Response is not ok. ${response}</p>`;
+        } else if (response.errors) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response}</p>`;
         }
 
         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
-        this.show_verification_page();
+        //show_verification_page();
     }
     
     catch(error) {
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Unsuccessful. (${(error)})</p>`;
-    }
-
-    
+    }    
 }
 
 

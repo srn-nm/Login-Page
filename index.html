@@ -17,8 +17,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 500px;
-            width: 400px;
+            height: 100vh;
             margin: 0;
             flex-shrink: 0
         }
@@ -40,13 +39,14 @@
         }
 
         .login-form input {
-            width: 100%;
+            width: 95%;
             padding: 12px;
             margin: 10px 0;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 6px;
             display: block;
+            text-align: right;
         }
 
         .login-form select,
@@ -82,6 +82,12 @@
             background-color: #0056b3;
         }
 
+        .login-form select,
+        .login-form label,
+        .login-form option {
+            text-align: right;
+        }
+
         #result {
             font-size: 16px;
             color: #007bff;
@@ -97,16 +103,16 @@
             <input type="text" id="username" placeholder="نام کاربری" />
             <input type="password" id="password" placeholder="گذرواژه" />
 
-            <label for="authTypeDropDown">Choose an option:</label>
+            <label for="authTypeDropDown">نوع ورود کاربری</label>
                 <select id="authTypeDropDown" name="choice1">
-                    <option value="Option1">Option 1</option>
-                    <option value="Option2">Option 2</option>
+                    <option value="ًLDAP">LDAP</option>
+                    <option value="USERPASS">نام کاربری و پسورد</option>
                 </select>
 
-            <label for="typeDropDown">Choose an option:</label>
+            <label for="typeDropDown">صحت سنجی</label>
             <select id="typeDropDown" name="choice2">
-                <option value="Option1">Option 1</option>
-                <option value="Option2">Option 2</option>
+                <option value="QR">اسکن QR کد</option>
+                <option value="MOBILE">موبایل</option>
             </select>
 
             <button id="loginButton" onclick="clickLoginButton()">ورود</button>
