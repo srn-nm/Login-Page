@@ -22,25 +22,18 @@ async function Challenge() {
     };
     
     try {
-        const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge";
-    
+        const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
+        
         const response = await fetch(apiURL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(requestData)
-        });
-    
-        const text = await response.text(); // get raw response (can be JSON or plain text)
-    
-        let data;
-        try {
-            data = JSON.parse(text); // try parsing it as JSON
-        } catch (e) {
-            data = text; // fallback to plain text if parsing fails
-        }
-    
+        })
+
+        const data = await response.json();
+
         if (!response.ok) {
             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">Response is not ok. ${response}</p>`;
         } else if (response.errors) {
@@ -51,10 +44,10 @@ async function Challenge() {
         //show_verification_page();
     }
     
-    } catch (error) {
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
-    }
-    
+    catch(error) {
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Unsuccessful. (${(error)})</p>`;
+        //show_verification_page(); // for testing
+    }    
 }
 
 
