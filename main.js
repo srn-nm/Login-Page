@@ -40,8 +40,6 @@ async function Challenge() {
         if (!response.ok) {
             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response}</p>`;
         }  
-        
-        const data = await response.json();
 
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌.طول پسوورد باید بیشتر از 6 کاراکتر باشد${data.message}</p>`;
         
@@ -50,14 +48,13 @@ async function Challenge() {
         // resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
         //const id = data.id;
         //show_verification_page();
-    }
+    
     
     } catch (error) {
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
     }
     
 }
-
 
 // function show_verification_page() {
 
