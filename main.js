@@ -31,9 +31,11 @@ async function Challenge() {
             headers: {
                 "Content-Type": "application/json"
             },
-    
+            mode: 'same-origin',
             body: JSON.stringify(dataSending)
         })
+
+        const data = await response.json();
 
         if (!response.ok) {
             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response}</p>`;
@@ -50,12 +52,11 @@ async function Challenge() {
         //show_verification_page();
     }
     
-    catch(error) {
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Unsuccessful. (${(error)})</p>`;
-        console.log(error);
-        console.log(error.message);
-    }    
+    } catch (error) {
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
     }
+    
+}
 
 
 // function show_verification_page() {
