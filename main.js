@@ -34,29 +34,30 @@ async function Challenge() {
             body: JSON.stringify(dataSending)
         })
 
-        const data = await response.json();
-
         if (!response.ok) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response}</p>`;
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response.status}</p>`;
         }  
 
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌.طول پسوورد باید بیشتر از 6 کاراکتر باشد${data.message}</p>`;
+        const data = await response.json();
         
-
-        if (data.id) {
-            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
-            const id = data.id;
+        if (JSON.stringify(data.id)) {
+            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful!! ${JSON.stringify(data)}}</p>`;
+            document.cookie = "Challenge_id=" + JSON.stringify(data.id);
             show_verification_page(); 
-        }
-        resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
-        const id = data.id;
-    
-    
+            
+        } else if (JSON.stringify(data.errors)) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error!! ${JSON.stringify(data.errors[0].msg)}</p>`;
+        } 
+
+        // this is a help:
+        ///////////////////////
+        // const data = [{"msg":"String should have at least 6 characters","code":0,"loc":["body","username"]}];
+        // const message = data[0].msg;  // Extracts the message from the first object
+        // console.log(message);  // Output: String should have at least 6 characters
     
     } catch (error) {
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
     }
-    
 }
 
 function show_verification_page() {
@@ -66,77 +67,66 @@ function show_verification_page() {
         resultDiv.innerHTML = "...درحال بررسی"
     }
 
-    //this.send_sms_to_mobile();
+    this.send_sms_to_mobile();
 
     window.location.href = "index2.html";
 
-    // const getCookie = (name: string): string | undefined => {
-    //     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-    //     return match ? match[2] : undefined;
-    // };
-    // yek rah baraye gereftane cookie va hefzesh bayad peyda konam
+    const getCookie = (name) => {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : undefined;
+    };
 
     if (resultDiv){
-        const resultDiv2 = document.getElementById("result2");\z
+        const resultDiv2 = document.getElementById("result2");
         resultDiv2.innerHTML = getCookie("mobile"); //namayeshe mobile un zir
     }
-
-    const verifyButton = this.target.querySelector("#verifyButton") as HTMLButtonElement;
-    verifyButton.addEventListener("click", () => {
-
-        // this.handle_SMS_verification();
-        // this.currentVerificationCode = (document.getElementById("password") as HTMLInputElement).value;
-    }); 
 }
 
-// function send_sms_to_mobile() {
-//     const getCookie = (name: string): string | undefined => {
-//         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-//         return match ? match[2] : undefined;
-//     };
+async function send_sms_to_mobile() {
+    const getCookie = (name) => {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : undefined;
+    };
     
-//     const challengeId = getCookie("Challenge_id");
+    const challengeId = getCookie("Challenge_id");
     
-//     if (!challengeId) {
-//         console.error("No challenge ID found!");
-//         return;
-//     }
+    if (!challengeId) {
+        console.error("No challenge ID found!");
+        return;
+    }
     
-//     const resultDiv = document.getElementById("result");
+    const resultDiv = document.getElementById("result");
 
-//     try {
-//         const apiURL = `http://172.16.20.173/api/v1/authentication/login/challenge/${challengeId}/mobile`;
+    try {
+        const apiURL = `http://172.16.20.173/api/v1/authentication/login/challenge/${challengeID}/mobile`;
 
-//         const response = await fetch(apiURL, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify({
-//                 id: challengeId
-//             })
-//         })
+        const response = await fetch(apiURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "id": challengeId
+            })
+        })
 
+        const data = await response.json();
 
-//         const data = await response.json();
+        if (!response.ok) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;"> response is not ok. ${response}</p>`;
+        }
 
-//         if (!response.ok) {
-//             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;"> response is not ok. ${response}</p>`;
-//         }
+        resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
+        document.cookie = "mobile=" + data.mobile;
+        document.cookie = "expires_in=" + data.expires_in;
 
-//         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
-//         document.cookie = "mobile=" + data.mobile;
-//         document.cookie = "expires_in=" + data.expires_in;
+        this.show_verification_page();
+    }
 
-//         this.show_verification_page();
-//     }
-
-    
-//     catch(error) {
-//         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Unsuccessful. (${(error)})</p>`;
-//     }
-
-// }
+    catch(error) {
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Unsuccessful. (${(error)})</p>`;
+    }
+}
 
 // function handle_SMS_verification() { 
 //     const verificationCode = (document.getElementById("verificationCode") as HTMLInputElement)?.value;
