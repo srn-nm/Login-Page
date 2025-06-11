@@ -16,19 +16,12 @@ async function Challenge() {
     currentAuthType = document.getElementById("authTypeDropDown").value;
     currentType = document.getElementById("typeDropDown").value;
 
-    const requestData = {
+    const dataSending = {
         authType: currentAuthType,  //"MOBILE",
         password: currentPassword,
         type: currentType,  //"USERPASS",
         username: currentUsername
     };
-
-    const dataSending = {
-        "authType": "MOBILE",
-        "password": "$aMneQ34Gh",
-        "type": "USERPASS",
-        "username": "s.nasermoghadasi"
-    }
 
     try {
         const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
@@ -38,19 +31,22 @@ async function Challenge() {
             headers: {
                 "Content-Type": "application/json"
             },
-            mode: 'same-origin',
+    
             body: JSON.stringify(dataSending)
         })
 
+        if (!response.ok) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response}</p>`;
+        }  
+        
         const data = await response.json();
 
-        if (!response.ok) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">Response is not ok. ${response}</p>`;
-        } else if (response.error) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">An Error occurred.${response.error}</p>`;
-        }
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌.طول پسوورد باید بیشتر از 6 کاراکتر باشد${data.message}</p>`;
+        
+        
 
-        resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
+        // resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
+        //const id = data.id;
         //show_verification_page();
     }
     
