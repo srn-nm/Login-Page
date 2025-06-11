@@ -31,7 +31,6 @@ async function Challenge() {
             headers: {
                 "Content-Type": "application/json"
             },
-            mode: 'same-origin',
             body: JSON.stringify(dataSending)
         })
 
@@ -43,11 +42,15 @@ async function Challenge() {
 
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌.طول پسوورد باید بیشتر از 6 کاراکتر باشد${data.message}</p>`;
         
-        
 
-        // resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
-        //const id = data.id;
-        //show_verification_page();
+        if (data.id) {
+            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
+            const id = data.id;
+            show_verification_page(); 
+        }
+        resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful! ${JSON.stringify(data)}}</p>`;
+        const id = data.id;
+    
     
     
     } catch (error) {
@@ -56,116 +59,35 @@ async function Challenge() {
     
 }
 
-// function show_verification_page() {
+function show_verification_page() {
 
-//     const resultDiv = document.getElementById("result");
-//     if (resultDiv){
-//         resultDiv.innerHTML = "...درحال بررسی"
-//     }
+    const resultDiv = document.getElementById("result");
+    if (resultDiv){
+        resultDiv.innerHTML = "...درحال بررسی"
+    }
 
-//     this.send_sms_to_mobile();
+    //this.send_sms_to_mobile();
 
-//     this.target.innerHTML = `
-//         <style>
-//             body {
-//                 font-family: "Arial", sans-serif;
-//                 background-color: #f4f4f4;
-//                 display: flex;
-//                 justify-content: center;
-//                 align-items: center;
-//                 height: 500px;
-//                 width: 400px;
-//                 margin: 0;
-//                 flex-shrink: 0;
-//             }
+    window.location.href = "index2.html";
 
-//             .verification-form {
-//                 background-color: white;
-//                 padding: 40px;
-//                 border-radius: 8px;
-//                 box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-//                 width: 400px;
-//                 text-align: center;
-//                 flex-shrink: 0;
-//             }
+    // const getCookie = (name: string): string | undefined => {
+    //     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    //     return match ? match[2] : undefined;
+    // };
+    // yek rah baraye gereftane cookie va hefzesh bayad peyda konam
 
-//             .verification-form h2 {
-//                 font-size: 24px;
-//                 margin-bottom: 20px;
-//                 color: #333;
-//             }
+    if (resultDiv){
+        const resultDiv2 = document.getElementById("result2");\z
+        resultDiv2.innerHTML = getCookie("mobile"); //namayeshe mobile un zir
+    }
 
-//             .verification-form button,
-//             .verification-form input {
-//                 width: 100%;
-//                 padding: 12px;
-//                 margin: 10px 0;
-//                 font-size: 16px;
-//                 border: 1px solid #ccc;
-//                 border-radius: 6px;
-//                 display: block;
-//                 text-align: center;
+    const verifyButton = this.target.querySelector("#verifyButton") as HTMLButtonElement;
+    verifyButton.addEventListener("click", () => {
 
-//             }
-
-//             .verification-form button {
-//                 background-color: #007bff;
-//                 color: white;
-//                 font-size: 18px;
-//                 cursor: pointer;
-//                 border: none;
-//                 transition: 0.3s ease;
-//             }
-
-//             .verification-form button:hover {
-//                 background-color: #0056b3;
-//             }
-
-//             #result {
-//                 font-size: 18px;
-//                 color:  #0056b3;
-//                 margin-top: 20px;
-//             }
-
-//             #result2 {
-//                 font-size: 18px;
-//                 color:  #0056b3;
-//                 margin-top: 20px;
-//             }
-//         </style>
-
-//         <div class="verification-form">
-//             <h2>کد ارسال شده به تلفن همراه را وارد کنید</h2>
-
-//             <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;" >
-//                 <input type="text" id="verificationCode" maxlength="4" placeholder="_ _ _ _‍" />
-//                 <button id="verifyButton">بررسی</button>
-//             </div>
-            
-//             <div id="result"></div>
-//             <div id="result2"></div>
-            
-//         </div>
-//     `;
-
-//     const getCookie = (name: string): string | undefined => {
-//         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-//         return match ? match[2] : undefined;
-//     };
-//     // yek rah baraye gereftane cookie va hefzesh bayad peyda konam
-
-//     if (resultDiv){
-//         const resultDiv2 = document.getElementById("result2");\z
-//         resultDiv2.innerHTML = getCookie("mobile"); //namayeshe mobile un zir
-//     }
-
-//     const verifyButton = this.target.querySelector("#verifyButton") as HTMLButtonElement;
-//     verifyButton.addEventListener("click", () => {
-
-//         this.handle_SMS_verification();
-//         // this.currentVerificationCode = (document.getElementById("password") as HTMLInputElement).value;
-//     }); 
-// }
+        // this.handle_SMS_verification();
+        // this.currentVerificationCode = (document.getElementById("password") as HTMLInputElement).value;
+    }); 
+}
 
 // function send_sms_to_mobile() {
 //     const getCookie = (name: string): string | undefined => {
