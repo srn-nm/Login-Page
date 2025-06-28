@@ -5,14 +5,18 @@
 </head>
 <body>
     <style>
-        /* @font-face {
-            font-family: "Vazir";
-            src: url('../fonts/Vazir.woff2') format('woff2'),
-            url('../fonts/Vazir.woff') format('woff');
-        } */
+
+        @font-face {
+            font-family: Vazirmatn;
+            src: url('fonts/Vazirmatn-Light.woff2') format('woff2');
+            src: url('fonts/Vazirmatn-Light.ttf') format('ttf');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
 
         body {
-            font-family: "Arial", sans-serif;
+            font-family: "Vazirmatn", sans-serif;
             background-color: #f4f4f4;
             display: flex;
             justify-content: center;
@@ -23,6 +27,7 @@
         }
 
         .login-form {
+            font-family: "Vazirmatn", sans-serif;
             background-color: white;
             padding: 40px;
             border-radius: 8px;
@@ -33,12 +38,14 @@
         }
 
         .login-form h2 {
+            font-family: "Vazirmatn", sans-serif;
             font-size: 28px;
             margin-bottom: 20px;
             color: #333;
         }
 
         .login-form input {
+            font-family: "Vazirmatn", sans-serif;
             width: 95%;
             padding: 12px;
             margin: 10px 0;
@@ -51,6 +58,7 @@
 
         .login-form select,
         .login-form button {
+            font-family: "Vazirmatn", sans-serif;
             width: 100%;
             padding: 12px;
             margin: 10px 0;
@@ -61,6 +69,7 @@
         }
 
         .login-form label {
+            font-family: "Vazirmatn", sans-serif;
             font-size: 18px;
             display: block;
             margin-top: 15px;
@@ -86,6 +95,7 @@
         .login-form label,
         .login-form option {
             text-align: right;
+            
         }
 
         #result {
@@ -111,7 +121,7 @@
 
             <label for="typeDropDown">صحت سنجی</label>
             <select id="typeDropDown" name="choice2">
-                <option value="LDAP">اسکن QR کد</option>
+                <option value="LDAP"> QR اسکن کد </option>
                 <option value="USERPASS">موبایل</option>
             </select>
 
