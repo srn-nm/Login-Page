@@ -15,55 +15,51 @@ async function challenge() {
     currentType = document.getElementById("typeDropDown").value;
 
     const dataSending = {
-        authType: currentAuthType,  //"MOBILE",
+        authType: currentAuthType,  //"MOBILE", QR
         password: currentPassword,
         type: currentType,  //"USERPASS", LDAP
         username: currentUsername
     };
 
-    if (currentType == "LDAP" && currentAuthType == "QR") {
-        QR_verification_page();
-    } else if (currentType == "USERPASS" && currentAuthType == "MOBILE") {
-        SMS_verification_page();
-    } else {
-        // what to do maybe error?
-    }
-
-    // try {
-    //     const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
+    try {
+        const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
         
-    //     const response = await fetch(apiURL, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         },
-    //         body: JSON.stringify(dataSending)
-    //     })
+        const response = await fetch(apiURL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dataSending)
+        })
 
-    //     // if (!response.ok) {
-    //     //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response.status}</p>`;
-    //     // }  
+        // if (!response.ok) {
+        //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response.status}</p>`;
+        // }  
 
-    //     const data = await response.json();
+        const data = await response.json();
         
-    //     if (JSON.stringify(data.id)) {
-    //         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful!! ${JSON.stringify(data)}}</p>`;
-    //         document.cookie = "challenge_id=" + JSON.stringify(data.id);
-    //         SMS_verification_page(); 
+        if (JSON.stringify(data.id)) {
+            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful!! ${JSON.stringify(data)}}</p>`;
+            console.log("Successful!!");
+            document.cookie = "challenge_id=" + JSON.stringify(data.id);
+
+            if (currentType == "LDAP" && currentAuthType == "QR") {
+                QR_verification_page();
+            } else if (currentType == "USERPASS" && currentAuthType == "MOBILE") {
+                SMS_verification_page();
+            } else {
+                // what to do maybe error?
+            } 
             
-    //     } else if (JSON.stringify(data.errors)) {
-    //         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error!! ${JSON.stringify(data.errors[0].msg)}</p>`;
-    //     } 
+        } else if (JSON.stringify(data.errors)) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error!! ${JSON.stringify(data.errors[0].msg)}</p>`;
+            console.error("Error!!");
+        }
 
-    //     // this is a help:
-    //     ///////////////////////
-    //     // const data = [{"msg":"String should have at least 6 characters","code":0,"loc":["body","username"]}];
-    //     // const message = data[0].msg;  // Extracts the message from the first object
-    //     // console.log(message);  // Output: String should have at least 6 characters
-    
-    // } catch (error) {
-    //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error: ${error.message}</p>`;
-    // }
+    } catch (error) {
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error! : ${error.message}</p>`;
+        console.error("Network or JavaScript Error.");
+    }
 }
 
 function QR_verification_page() {
@@ -73,9 +69,9 @@ function QR_verification_page() {
     }
 
     // checking if the user has already scanned the qr code and has access to authenticator
-    // if they have previously scanned the qr code this function will be called:
+    // if they had previously scanned the qr code, then this function would be called:
     // add_QR_code();
-    // and if they have previously scanned the qr or have just done it now, this function will be called:
+    // and if they had previously scanned the qr or had done it just now, this function would be called:
     QR_authentication();
 }
 
