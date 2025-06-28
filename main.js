@@ -19,13 +19,20 @@ async function challenge() {
     passwordErrorDiv = document.getElementById("passwordError");
 
     if (currentUsername.length == 0) {
-        userErrorDiv.innerHTML = `<p style="color: red; font-size: 18px;">!نام کاربری اجباری است</p>`
+        userErrorDiv.innerHTML = `<p style="color: red; font-size: 14px;">!نام کاربری اجباری است</p>`
+        return;
+    } else {
+        userErrorDiv.innerHTML = ''
     }
 
     if (currentPassword.length == 0) {
-        userErrorDiv.innerHTML = `<p style="color: red; font-size: 18px;">!گذرواژه اجباری است</p>`
+        passwordErrorDiv.innerHTML = `<p style="color: red; font-size: 14px;">!گذرواژه اجباری است</p>`
+        return;
     } else if (currentPassword.length < 8) {
-        userErrorDiv.innerHTML = `<p style="color: red; font-size: 18px;">!گذرواژه حداقل 8 کاراکتر مجاز دارد</p>`
+        passwordErrorDiv.innerHTML = `<p style="color: red; font-size: 14px;">!گذرواژه حداقل 8 کاراکتر مجاز دارد</p>`
+        return;
+    } else {
+        passwordErrorDiv.innerHTML = ''
     }
 
     const dataSending = {
@@ -48,6 +55,7 @@ async function challenge() {
 
     //     // if (!response.ok) {
     //     //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response.status}</p>`;
+    //     //     return;
     //     // }  
 
     //     const data = await response.json();
@@ -68,11 +76,13 @@ async function challenge() {
     //     } else if (JSON.stringify(data.errors)) {
     //         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error!! ${JSON.stringify(data.errors[0].msg)}</p>`;
     //         console.error("Error!!");
+    //         return;
     //     }
 
     // } catch (error) {
     //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error! : ${error.message}</p>`;
     //     console.error("Network or JavaScript Error.");
+    //     return;
     // }
 
     SMS_verification_page(); ///////testing (should be removed)
@@ -104,7 +114,7 @@ async function QR_authentication() {
         const authenticationCode = document.getElementById("verificationCode");
 
         if (authenticationCode.length == 0) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد ارسال شده را وارد کنید</p>`;
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!وارد کردن کد اجباری است</p>`;
             return;
         } else if (authenticationCode.length < 6) {
             resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد باید 4 رقمی باشد</p>`;
@@ -216,7 +226,7 @@ async function handle_SMS_verification() {
 
     if (verificationCode.length == 0 ) {
         const resultDiv = document.getElementById("result");
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد ارسال شده را وارد کنید</p>`;
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!وارد کردن کد اجباری است</p>`;
         return;
     } else if (verificationCode.length < 4) {
         const resultDiv = document.getElementById("result");
