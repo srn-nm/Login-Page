@@ -4,6 +4,7 @@ function clickLoginButton() {
 }
 
 async function challenge() {
+
     const resultDiv = document.getElementById("result");
     if (resultDiv){
         resultDiv.innerHTML = "...درحال بررسی"
@@ -14,6 +15,19 @@ async function challenge() {
     currentAuthType = document.getElementById("authTypeDropDown").value;
     currentType = document.getElementById("typeDropDown").value;
 
+    userErrorDiv = document.getElementById("userError");
+    passwordErrorDiv = document.getElementById("passwordError");
+
+    if (currentUsername.length == 0) {
+        userErrorDiv.innerHTML = `<p style="color: red; font-size: 18px;">!نام کاربری اجباری است</p>`
+    }
+
+    if (currentPassword.length == 0) {
+        userErrorDiv.innerHTML = `<p style="color: red; font-size: 18px;">!گذرواژه اجباری است</p>`
+    } else if (currentPassword.length < 8) {
+        userErrorDiv.innerHTML = `<p style="color: red; font-size: 18px;">!گذرواژه حداقل 8 کاراکتر مجاز دارد</p>`
+    }
+
     const dataSending = {
         authType: currentAuthType,  //"MOBILE", QR
         password: currentPassword,
@@ -21,45 +35,47 @@ async function challenge() {
         username: currentUsername
     };
 
-    try {
-        const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
+    // try {
+    //     const apiURL = "http://172.16.20.173/api/v1/authentication/login/challenge"
         
-        const response = await fetch(apiURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(dataSending)
-        })
+    //     const response = await fetch(apiURL, {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify(dataSending)
+    //     })
 
-        // if (!response.ok) {
-        //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response.status}</p>`;
-        // }  
+    //     // if (!response.ok) {
+    //     //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌Response is not ok. ${response.status}</p>`;
+    //     // }  
 
-        const data = await response.json();
+    //     const data = await response.json();
         
-        if (JSON.stringify(data.id)) {
-            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful!! ${JSON.stringify(data)}}</p>`;
-            console.log("Successful!!");
-            document.cookie = "challenge_id=" + JSON.stringify(data.id);
+    //     if (JSON.stringify(data.id)) {
+    //         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Successful!! ${JSON.stringify(data)}}</p>`;
+    //         console.log("Successful!!");
+    //         document.cookie = "challenge_id=" + JSON.stringify(data.id);
 
-            if (currentType == "LDAP" && currentAuthType == "QR") {
-                QR_verification_page();
-            } else if (currentType == "USERPASS" && currentAuthType == "MOBILE") {
-                SMS_verification_page();
-            } else {
-                // what to do maybe error?
-            } 
+    //         if (currentType == "LDAP" && currentAuthType == "QR") {
+    //             QR_verification_page();
+    //         } else if (currentType == "USERPASS" && currentAuthType == "MOBILE") {
+    //             SMS_verification_page();
+    //         } else {
+    //             // what to do maybe error?
+    //         } 
             
-        } else if (JSON.stringify(data.errors)) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error!! ${JSON.stringify(data.errors[0].msg)}</p>`;
-            console.error("Error!!");
-        }
+    //     } else if (JSON.stringify(data.errors)) {
+    //         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error!! ${JSON.stringify(data.errors[0].msg)}</p>`;
+    //         console.error("Error!!");
+    //     }
 
-    } catch (error) {
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error! : ${error.message}</p>`;
-        console.error("Network or JavaScript Error.");
-    }
+    // } catch (error) {
+    //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Network or JavaScript Error! : ${error.message}</p>`;
+    //     console.error("Network or JavaScript Error.");
+    // }
+
+    SMS_verification_page(); ///////testing (should be removed)
 }
 
 function QR_verification_page() {
@@ -86,6 +102,14 @@ async function QR_authentication() {
     //in code paiin tu in function bayad karkardesh check she
     try {
         const authenticationCode = document.getElementById("verificationCode");
+
+        if (authenticationCode.length == 0) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد ارسال شده را وارد کنید</p>`;
+            return;
+        } else if (authenticationCode.length < 6) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد باید 4 رقمی باشد</p>`;
+            return;
+        }
 
         const apiURL = ``; //todo
 
@@ -139,7 +163,7 @@ function SMS_verification_page() {
 
     const resultDiv2 = document.getElementById("result2");
     if (resultDiv2){
-        resultDiv2.innerHTML = getCookie("mobile"); //namayeshe mobile un zir
+        resultDiv2.innerHTML = getCookie("mobile"); 
     }
 }
 
@@ -189,6 +213,16 @@ async function send_sms_to_mobile() {
 
 async function handle_SMS_verification() { 
     const verificationCode = document.getElementById("verificationCode").value;
+
+    if (verificationCode.length == 0 ) {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد ارسال شده را وارد کنید</p>`;
+        return;
+    } else if (verificationCode.length < 4) {
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">!کد باید 4 رقمی باشد</p>`;
+        return;
+    }
 
     const getCookie = (name) => {
         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -242,8 +276,6 @@ async function handle_SMS_verification() {
     //     resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error verifying code.</p>`
     // }
     
-    const resultDiv = document.getElementById("result");  ///////////////testing
-    resultDiv.innerHTML = `<p style="color: blue; font-size: 18px;">Your verification code: ${verificationCode}</p>`
     this.successful_login_page();
 }
 
@@ -295,6 +327,6 @@ async function get_access_token() {
     }
 }
 
-function giveAccessToData() {
+function give_access_to_data() {
     // now the user has access to the data
 }
