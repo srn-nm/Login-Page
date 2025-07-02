@@ -121,7 +121,7 @@ function QR_verification_page() {
     if (resultDiv){
         resultDiv.innerHTML = "...درحال بررسی"
     }
-    window.location.assign("pages/QRAuthenticationPage.html");
+    window.location.assign("QRAuthenticationPage.html");
 }
 
 async function handle_QR_authentication() {
@@ -197,7 +197,7 @@ async function handle_QR_authentication() {
 function SMS_verification_page() {
     let resultDiv = document.getElementById("result");
 
-    window.location.assign("pages/SMSVerificationPage.html")
+    window.location.assign("SMSVerificationPage.html")
 
     send_sms_to_mobile();
 
