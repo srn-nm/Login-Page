@@ -4,7 +4,6 @@
 import express from "express"
 import mssql from "mssql/msnodesqlv8.js"
 import cors from "cors"
-import { DateTime } from "msnodesqlv8"
 
 const app = express()
 app.use(express.json())
