@@ -1,9 +1,4 @@
-let globalAccessToken;
-let globalChallengeID;
-
-function modifyAccessToken(newTokenAccess) {
-    globalAccessToken = newTokenAccess;
-}
+let newAccessToken = ""
 
 async function challenge() {
 
@@ -44,7 +39,7 @@ async function challenge() {
     };
 
     try {
-        let apiURL = "http://localhost:3000/challenge"
+        let apiURL = "http://localhost:4000/challenge"
         const response = await fetch (apiURL , {
             method: "POST",
             headers: {
@@ -60,31 +55,76 @@ async function challenge() {
 
             console.log("New Challenge ID: " + data)
 
-            let globalChallengeID = data;
+            const globalChallengeID = data;
 
             if (currentType == "LDAP") {
-                window.location.assign("QRAuthenticationPage.html");
-                const resultDiv = document.getElementById("result");
-            
+                window.location.assign("QRAuthenticationPage.html?challengeID=" + encodeURIComponent(globalChallengeID));
             } else if (currentType == "USERPASS") {
-                const resultDiv = document.getElementById("result");
-                send_sms_to_mobile();
-                window.location.assign("SMSVerificationPage.html");
+                window.location.assign("SMSVerificationPage.html?challengeID=" + encodeURIComponent(globalChallengeID));
             }
         } else {
             const error = await response.text();
             console.log("Error " + response.status + " " + error )
+            const resultDiv = document.getElementById("result");
+            if (resultDiv) {
+                resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error ${response.status} ${error}</p>`
+            }
         }
         
     } catch (error) {
         const resultDiv = document.getElementById("result");
         if (resultDiv) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to localHost: ${error.message}</p>`
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in the request sending to Local Server: ${error.message}</p>`
         }
         console.log("Catched error: " + error)
     }  
 }
 
+async function send_sms_to_mobile() {   
+    console.log("entered send sms to mobile.")
+    const resultDiv = document.getElementById("result");
+
+    try {
+        const params = new URLSearchParams(window.location.search);
+        const globalChallengeID = params.get("challengeID");
+    
+        console.log("Global:" + globalChallengeID) //why is this null?
+
+        let apiURL = "http://localhost:4000/send_sms_to_mobile"
+        const response = await fetch (apiURL , {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                challengeID: globalChallengeID
+            })
+        })
+
+        console.log("Request to Local Server send_sms_to_mobile was sent successfully.")
+
+        if (response.status == 200) {
+            console.log("SMS sent successfully.")
+            
+        } else {
+            console.log("SMS wasnt sent successfully.")
+            const error = await response.text();
+            console.log("Error " + response.status + " " + error )
+            const resultDiv = document.getElementById("result");
+            if (resultDiv) {
+                resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error ${response.status} ${error}</p>`
+            }
+            return;
+        }
+        
+    } catch (error) {
+        const resultDiv = document.getElementById("result");
+        if (resultDiv) {
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to Local Server sending sms to mobile: ${error.message}</p>`
+        }
+        console.log("Catched error: " + error)
+    }
+}
 
 async function handle_QR_authentication() {
 
@@ -100,7 +140,10 @@ async function handle_QR_authentication() {
     }
 
     try {
-        let apiURL = "http://localhost:3000/handle_QR_authentication"
+        const params = new URLSearchParams(window.location.search);
+        const globalChallengeID = params.get("challengeID");
+
+        let apiURL = "http://localhost:4000/handle_QR_authentication"
         const response = await fetch (apiURL , {
             method: "POST",
             headers: {
@@ -112,59 +155,25 @@ async function handle_QR_authentication() {
             })
         })
 
-        console.log("Request to localHost handle_QR_authentication was sent successfully.")
+        console.log("Request to Local Server handle_QR_authentication was sent successfully.")
 
         if (response.status == 200) {
             console.log("QR Authentication Successful.")
-            successful_login_page();
+            window.location.assign("successfulLoginPage.html?challengeID=" + encodeURIComponent(globalChallengeID));
             
         } else {
             console.log("QR Authentication unsuccessful.")
             const error = await response.text();
             console.log("Error " + response.status + " " + error )
-            const resultDiv = document.getElementById("result")
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;"> ${error}</p>`;
+            const resultDiv = document.getElementById("result");
+            if (resultDiv) {
+                resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error ${response.status} ${error}</p>`
+            }
             return;
         }
     } catch (error) {
         const resultDiv = document.getElementById("result");
-        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to localHost: ${error.message}</p>`
-        console.log("Catched error: " + error)
-    }
-}
-
-async function send_sms_to_mobile() {   
-    const resultDiv = document.getElementById("result");
-
-    try {
-        let apiURL = "http://localhost:3000/send_sms_to_mobile"
-        const response = await fetch (apiURL , {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                challengeID: globalChallengeID
-            })
-        })
-
-        console.log("Request to localHost send_sms_to_mobile was sent successfully.")
-
-        if (response.status == 200) {
-            console.log("SMS sent successfully.")
-            
-        } else {
-            console.log("SMS wasnt sent successfully.")
-            const error = await response.text();
-            console.log("Error " + response.status + " " + error )
-            return;
-        }
-        
-    } catch (error) {
-        const resultDiv = document.getElementById("result");
-        if (resultDiv) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to localHost: ${error.message}</p>`
-        }
+        resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to Local Server QR Authentication: ${error.message}</p>`
         console.log("Catched error: " + error)
     }
 }
@@ -183,7 +192,10 @@ async function handle_SMS_verification() {
     }
 
     try {
-        let apiURL = "http://localhost:3000/handle_SMS_verification"
+        const params = new URLSearchParams(window.location.search);
+        const globalChallengeID = params.get("challengeID");
+
+        let apiURL = "http://localhost:4000/handle_SMS_verification"
         const response = await fetch (apiURL , {
             method: "POST",
             headers: {
@@ -201,90 +213,96 @@ async function handle_SMS_verification() {
             const resultDiv = document.getElementById("result");
             resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Verification successful!</p>`
             console.log("Verification Successful.")
-            successful_login_page();
-            
+
+            window.location.assign("successfulLoginPage.html?challengeID=" + encodeURIComponent(globalChallengeID));
+        
         } else {
             const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Verification failed. Try again.</p>`
             console.error("Verification failed.")
             const error = await response.text();
             console.log("Error " + response.status + " " + error )
+            if (resultDiv) {
+                resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Verification failed ${response.status} ${error}</p>`
+            }
             return;
         }
         
     } catch (error) {
         const resultDiv = document.getElementById("result");
         if (resultDiv) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to localHost: ${error.message}</p>`
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to Local Server in SMS Verification: ${error.message}</p>`
         }
         console.log("Catched error: " + error)
     }
-}
-
-function successful_login_page() {
-    window.location.assign("successfulLoginPage.html");
-    get_access_token();
 }
 
 async function get_access_token() {
-    try {
-        let apiURL = "http://localhost:3000/get_access_token"
-        const response = await fetch (apiURL , {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({})
-        })
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = `<p style="color: blue; font-size: 18px;">Updating Access token ...</p>`;
 
-        console.log("Request to localHost get_access_token was sent successfully.")
+    // try {
+    //     let apiURL = "http://localhost:4000/get_access_token"
+    //     const response = await fetch (apiURL , {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //         body: JSON.stringify({})
+    //     })
 
-        if (response.status == 200) {
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Acccess token updated.</p>`
-            console.log("Acccess token updated.")
-            modifyAccessToken(response.text())
-    
-            // what to do next
-        } else {
-            const resultDiv = document.getElementById("result");
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Getting access token failed. Try again.</p>`
-            console.error("Getting access token failed.")
-            const error = await response.text();
-            console.log("Error " + response.status + " " + error )
-            return;
-        }
+    //     console.log("Request to Local Server get_access_token was sent successfully.")
+
+    //     if (response.status == 200) {
+    //         const resultDiv = document.getElementById("result");
+    //         resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Access token updated.</p>`
+    //         console.log("Access token updated.")
+    //         newAccessToken = response.text()
+    //     } else {
+    //         console.error("Getting access token failed.")
+    //         const error = await response.text();
+    //         console.log("Error " + response.status + " " + error )
+    //         const resultDiv = document.getElementById("result");
+    //         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Getting access token failed. ${response.status} ${error}</p>`
+    //     }
         
-    } catch (error) {
-        const resultDiv = document.getElementById("result");
-        if (resultDiv) {
-            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to localHost: ${error.message}</p>`
-        }
-        console.log("Catched error: " + error)
-    }
+    // } catch (error) {
+    //     const resultDiv = document.getElementById("result");
+    //     if (resultDiv) {
+    //         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the request to Local Server (for getting access token): ${error.message}</p>`
+    //     }
+    //     console.log("Catched error: " + error)
+    // }
 }
 
 async function send_token() {
-    accessToken = globalAccessToken
+    const hardCodedAccessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ZWVkYTJlNi00M2EwLTQ4ZDUtOGRiMi1hYWRlMjExYjQ0ZWIiLCJleHAiOjE3NTI5MTc3NTksImlhdCI6MTc1MjMxMjk1OSwibmJmIjoxNzUyMzEyOTU5LCJqdGkiOiJmMDNjOGIwYy1kMDU5LTRkODAtOGYxMS1jMTBhOWQ1YTBmMzAiLCJyb2xlcyI6WyJ1c2VyIl0sInNjb3BlcyI6WyJyZXBvcnQ6cmVhZCIsInJlcG9ydDp3cml0ZSIsInRlbXBsYXRlOnJlYWQiLCJ0ZW1wbGF0ZTp3cml0ZSJdfQ.jnhA0NsbDwWdCkGspQZmMib8QHvEygbQ25Ut_nkWFHHt_BMIWKqlhWhrf2C6_-OWBe7KoCuR8ffkVoHiuqHh_De-gisJrweDfJc2pY093M-syiyc8592BSEszoe4S5N3q3XaXZ9Hbm1SR7Qj_HufAM8SlZYig10J8w6Dv9X4zVKFKtvx_Zfg9yDE_mJG1eY6mt1W7S6i-lv8dN0HnOb46xKttm_jf3vUVall8fAd_FgqezuEuUOkEJQfznduLqzwr76VrlxQJGERX6KEotp34dv9hHay7c9-hVABCDmmAgmH-y9l40v5DM5x0fVf5ntMvSlvPNxe0c-r9BnjtUuPbA"
+    const resultDiv = document.getElementById("result");
+    if (resultDiv) {
+        resultDiv.innerHTML = `<p style="color: blue; font-size: 18px;">Sending token to database...</p>`
+    }
 
     try {
-        let apiURL = "http://localhost:3000/addToken"
+        let apiURL = "http://localhost:4000/addTokenToDB"
         const response = await fetch (apiURL , {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                accessToken: accessToken
+                newAccessToken: hardCodedAccessToken
             })
         })
         console.log("Request for updating token was sent successfully.")
 
-        const data = await response.text();
-        console.log(data)
-        const resultDiv = document.getElementById("result");
-        resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">${data}</p>`
-
+        if (response.status == 200) {
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `<p style="color: green; font-size: 18px;">✅ Data was sent successfully.</p>`
+        } else {
+            const responseBody = response.text()
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Sending the token to DB was unsuccessful: ${responseBody}.</p>`
+        }
+        
     } catch (error) {
         const resultDiv = document.getElementById("result");
         resultDiv.innerHTML = `<p style="color: red; font-size: 18px;">❌ Error in sending the token to DB: ${error.message}</p>`
